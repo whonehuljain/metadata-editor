@@ -113,3 +113,9 @@ func (ip *ImageProcessor) printStats() {
 	fmt.Printf("Skipped (unsupported): %d\n", ip.stats.SkippedFiles)
 	fmt.Printf("Errors: %d\n", ip.stats.ErrorFiles)
 }
+
+func (ip *ImageProcessor) Close() {
+	if ip.editor != nil {
+		ip.editor.Close()
+	}
+}

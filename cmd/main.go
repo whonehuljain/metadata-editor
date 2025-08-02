@@ -50,6 +50,14 @@ func main() {
 
 	// Process images
 	processor := processor.New(cfg)
+
+	// Make sure to close the exiftool when done
+	defer func() {
+		if processor != nil {
+			processor.Close()
+		}
+	}()
+
 	if err := processor.ProcessFolder(); err != nil {
 		log.Fatalf("Processing failed: %v", err)
 	}
