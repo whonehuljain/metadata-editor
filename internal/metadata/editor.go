@@ -111,3 +111,30 @@ func (e *Editor) updateWithExifTool(filePath string, dateTime time.Time) error {
 func (e *Editor) updateFileSystemTimestamp(filePath string, dateTime time.Time) error {
 	return os.Chtimes(filePath, dateTime, dateTime)
 }
+
+func (e *Editor) GetOriginalTimestamp(filePath string) (time.Time, error) {
+	// Use exiftool to read the original timestamp
+	cmd := exec.Command("exiftool", "-DateTimeOriginal", "-s", "-s", "-s", filePath)
+	output, err := cmd.Output()
+	if err != nil {
+		// Try alternative date fields
+		cmd = exec.Command("exiftool", "-DateTime", "-s", "-s", "-s", filePath)
+		output, err = cmd.Output()
+		if err != nil {
+			return time.Time{}, fmt.Errorf("could not read timestamp: %w", err)
+		}
+	}
+
+	// Parse the timestamp (format: "YYYY:MM:DD HH:MM:SS")
+	timestampStr := strings.TrimSpace(string(output))
+	if timestampStr == "" {
+		return time.Time{}, fmt.Errorf("no timestamp found")
+	}
+
+	timestamp, err := time.Parse("2006:01:02 15:04:05", timestampStr)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("could not parse timestamp '%s': %w", timestampStr, err)
+	}
+
+	return timestamp, nil
+}
