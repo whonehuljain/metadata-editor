@@ -59,8 +59,8 @@ This tool is written in Go, so you need Go installed to build it.
 
 1. **Clone or download this repository:**
 ```bash
-git clone <repository-url>
-cd image-metadata-editor
+git clone https://github.com/whonehuljain/metadata-editor.git
+cd metadata-editor
 ```
 
 2. **Build the tool:**
